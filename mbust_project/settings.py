@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-8p4dnoiy$#d26#i(&@xnvl+ipq&0mu1bwsv6$4eb_lw8+pr%9g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://ai-and-ml-based-control-of-indoor-z8au.onrender.com']
+ALLOWED_HOSTS = ['ai-and-ml-based-control-of-indoor-z8au.onrender.com']
 
 
 
