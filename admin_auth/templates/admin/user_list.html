@@ -1,0 +1,54 @@
+{% extends "admin/base.html" %}
+{% block content_dashboard %}
+    <table class="table table-bordered"  id="userListTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th> Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone_number }}</td>
+                <td>
+                    {% if not user.is_superuser %}
+                    <form method="POST" action="{% url 'toggle_user_status' user.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{% url 'admin-dashboard' %}">
+                        <input type="checkbox" name="is_active"
+                            onchange="this.form.submit()" {% if user.is_active %}checked{% endif %}>
+                    </form>
+                    {% endif %}
+                </td>
+                 <td>
+                    <a href="{% url 'edit_user' user.id %}" class="btn btn-sm btn-warning">Edit</a> |
+                    <a href="{% url 'delete_user' user.id %}"  class="btn btn-sm btn-danger delete-btn">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}
+ 
+{% block scripts %}
+
+<script>
+   $(document).ready(function() {
+       $('#userListTable').DataTable({
+       paging: true,
+       searching: true,
+       ordering: true,
+       info: true
+       });
+       $('.breadcrumb-item.active, #pageName').html('Farmer User List')
+   })
+</script>
+{% endblock %}

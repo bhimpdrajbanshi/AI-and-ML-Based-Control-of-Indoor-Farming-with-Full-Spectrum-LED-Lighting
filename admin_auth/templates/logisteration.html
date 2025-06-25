@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="register-page">
+    <div class="register-box"> 
+      <div class="card">
+        <div class="card-body register-card-body">
+          <p class="login-box-msg">Register a new membership</p>
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="error">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+
+    
+          <form id="registerForm">
+             {% csrf_token %}
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="username" class="required mr-1"> Username</label>
+              </div>
+              <div class="col-md-12 input-group">
+                <input type="text" name="username" id="username" class="form-control" placeholder="username" required >
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-user"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="email" class="mr-1">Email</label>
+              </div>
+              <div class="col-md-12 input-group">
+                <input type="email" name="email" class="form-control" placeholder="Email">
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-envelope"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+             <div class="row mb-3">
+               <div class="col-md-12">
+                 <label for="phoneNumber" class="required mr-1">Phone Number</label>
+               </div>
+              <div class="col-md-12 input-group">
+                <input type="text" name="phoneNumber" class="form-control" placeholder="9800000000" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <i class="fa-solid fa-phone"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+               <div class="col-md-12">
+                 <label for="password" class="required mr-1">Password</label>
+               </div>
+              <div class="col-md-12 input-group">
+                <input type="password" name="password" class="form-control" placeholder="Password" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-lock"></span>
+                  </div>
+                </div>
+              </div>
+              </div>
+            <div class="row mb-3">
+               <div class="col-md-12">
+                 <label for="password2" class="required mr-1">Retype password</label>
+               </div>
+              <div class="input-group col-md-12">
+                <input type="password" name="password2" class="form-control" placeholder="Retype password" required>
+                <div class="input-group-append">
+                  <div class="input-group-text">
+                    <span class="fas fa-lock"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-8">
+                <div class="icheck-primary">
+                  {% comment %} <input type="checkbox" id="agreeTerms" name="terms" value="agree"> {% endcomment %}
+                  <label for="agreeTerms">
+                   {% comment %} I agree to the <a href="#">terms</a> {% endcomment %}
+                   <a href="{% url 'login' %}" class="text-center">I already have a Account</a>
+                  </label>
+                </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-4">
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+          {% comment %} <a href="{% url 'login' %}" class="text-center">I already have a Account</a> {% endcomment %}
+        </div>
+        <!-- /.form-box -->
+      </div><!-- /.card -->
+    </div>
+</div>
+<!-- /.register-box -->
+{% endblock %}
+
+{% block scripts %}
+ <script>
+  $(document).ready(function () {
+    validatePhoneNumber('phoneNumber', 10);
+    toastr.options = {
+      closeButton: true,
+      positionClass: "toast-top-right"
+    };
+
+    $('#registerForm').on('submit', function (e) {
+      e.preventDefault();
+
+      if (!validateRequiredFields('#registerForm')) {
+        return; // stop if a required field is empty
+      }
+
+      const formData = $(this).serialize();
+
+      $.ajax({
+        url: "{% url 'register' %}",
+        method: "POST",
+        data: formData,
+        headers: {
+          'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (response) {
+          toastr.success("Registered successfully!");
+          setTimeout(function () {
+            window.location.href = "{% url 'login' %}";
+          }, 2000);
+        },
+        error: handleAjaxError
+      });
+    });
+  });
+</script>
+{% endblock %}

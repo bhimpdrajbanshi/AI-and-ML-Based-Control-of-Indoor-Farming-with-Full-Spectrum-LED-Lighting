@@ -1,0 +1,69 @@
+{% extends "admin/base.html" %}
+
+{% block content_dashboard %}
+<a href="{% url 'vegetable_create' %}" class="btn btn-primary mb-1"><i class="fas fa-plus mr-1"></i>Add Vegetable</a>
+
+
+<table class="table table-bordered" id="myCustomTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Is Available</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for veg in vegetables %}
+      <tr>
+        <td>{{ veg.name }}</td>
+        <td>{{ veg.description }}</td>
+        <td>{{ veg.is_available }}</td>
+        <td>
+          <a href="{% url 'vegetable_delete' veg.pk %}" class="btn btn-sm btn-warning">Edit</a>
+          <!-- Trigger Button -->
+          <a href="#" 
+            class="btn btn-sm btn-danger delete-btn"
+            data-toggle="modal"
+            data-target="#deleteConfirmModal"
+            data-id="{{ item.id }}">
+            Delete
+          </a>
+
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Show message *outside* the table -->
+{% if not vegetables %}
+  <div class="alert alert-info text-center mt-3">
+    No produce listed.
+  </div>
+{% endif %}
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+   $(document).ready(function() {
+      const table = $('#myCustomTable');
+      const rowCount = table.find('tbody tr').length;
+
+      if (rowCount > 0) {
+        table.DataTable({
+          paging: true,
+          searching: true,
+          ordering: true,
+          info: true,
+          responsive: true,
+          columnDefs: [
+            { orderable: false, targets: -1 }
+          ]
+        });
+      }
+      $('.breadcrumb-item.active, #pageName').html('Vegetables List')
+   })
+</script>
+{% endblock %}

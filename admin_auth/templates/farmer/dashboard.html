@@ -1,0 +1,153 @@
+{% extends "farmer/base.html" %}
+
+{% block content_dashboard %}
+    <!-- Small boxes (Stat box) -->
+    <div class="row">
+        <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+            <h3>150</h3>
+
+            <p>New Orders</p>
+            </div>
+            <div class="icon">
+            <i class="ion ion-bag"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+            <h3>Rs.53</h3>
+
+            <p>Sell</p>
+            </div>
+            <div class="icon">
+            <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+            <h3>44</h3>
+
+            <p>Product Approved</p>
+            </div>
+            <div class="icon">
+            <i class="ion ion-person-add"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+            <h3>65</h3>
+
+            <p>Reject Product</p>
+            </div>
+            <div class="icon">
+            <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+        </div>
+        <!-- ./col -->
+    </div> 
+    <!-- /.row -->
+
+    <h4>Orders List</h4>
+    <table class="table table-bordered" id="ordersListTable">
+        <thead>
+            <tr>
+            <th>Name</th>
+            <th>Quantity (kg)</th>
+            <th>Total Price (NPR)</th>
+            <th>Order By</th>
+            <th>Payment Proved</th>
+            <th>Order At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in produce_list %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price }}</td>
+                <td>Ram KC</td>
+                <td>
+                <span class="badge badge-warning" style="background: #ffeab6 !important;
+                    border-radius: 20% !important;
+                    padding: 6px;">paid
+                </span>
+                </td>
+                <td>2082/10/10</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <h4>Product Approved List</h4>
+    <table class="table table-bordered" id="myCustomTable">
+        <thead>
+            <tr>
+            <th>Name</th>
+            <th>Quantity (kg)</th>
+            <th>Price (NPR)</th>
+            <th>Certification</th>
+            <th>Status</th>
+            <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in produce_list %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.certification }}</td>
+                <td>
+                <span class="badge badge-warning" style="background: #ffeab6 !important;
+                    border-radius: 20% !important;
+                    padding: 6px;">{{ item.get_status_display }}
+                </span>
+                </td>
+                <td>{{ item.remarks }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block scripts %}
+ <script>
+     $(document).ready(function() {
+        const table = $('#myCustomTable, #ordersListTable');
+        const rowCount = table.find('tbody tr').length;
+
+        if (rowCount > 0) {
+        table.DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            responsive: true,
+            columnDefs: [
+            { orderable: false, targets: -1 }
+            ]
+        });
+        }
+
+     });
+ </script>
+{% endblock %}

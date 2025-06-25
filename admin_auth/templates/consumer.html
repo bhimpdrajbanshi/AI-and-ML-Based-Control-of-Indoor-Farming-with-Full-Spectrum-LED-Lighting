@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+ <div class="container">
+    <div class="row mt-5" id="productContainer">
+      <!-- Cards get appended here -->
+    </div>
+  </div>
+</div>
+
+<!-- Login Required Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form id="loginForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Login Required</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div id="loginError" class="alert alert-danger d-none"></div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" name="phone" required placeholder="Enter your phone number">
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required placeholder="Enter your password">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="add-to-cart">LOGIN</button>
+        </div>
+        <p class="text-center"> Don't have an account? 
+          <a href="#" data-toggle="modal" data-target="#signupModal" data-dismiss="modal">Sign up</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Sign Up Modal -->
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="signupModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form id="signupForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="signupModalLabel">Create an Account</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span>&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div id="signupError" class="alert alert-danger d-none"></div>
+
+          <div class="form-group">
+            <label for="signupPhone">Phone Number</label>
+            <input type="tel" class="form-control" id="signupPhone" name="phone" required>
+          </div>
+
+          <div class="form-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" class="form-control" id="signupPassword" name="password" required>
+          </div>
+
+          <div class="form-group">
+            <label for="signupConfirmPassword">Confirm Password</label>
+            <input type="password" class="form-control" id="signupConfirmPassword" name="confirm_password" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="add-to-cart">Sign Up</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+  let cart = {};
+
+  function updateCartUI() {
+    let $tbody = $('#cart-items tbody');
+    $tbody.empty();
+
+    let total = 0;
+    if (Object.keys(cart).length === 0) {
+      $tbody.append('<tr><td colspan="5">Your cart is empty</td></tr>');
+    } else {
+      $.each(cart, function (id, item) {
+        let itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        $tbody.append(`
+          <tr data-id="${id}">
+            <td>${item.name}</td>
+            <td>${item.price} NPR</td>
+            <td>
+              <input type="number" min="1" class="cart-qty" value="${item.quantity}" style="width: 60px;">
+            </td>
+            <td>${itemTotal} NPR</td>
+            <td><button class="remove-item btn btn-sm btn-danger">Remove</button></td>
+          </tr>
+        `);
+      });
+    }
+
+    $('#cart-total').text(total);
+  }
+
+  $(document).ready(function () {
+    // Add to Cart
+    const isAuthenticated = {{ is_authenticated|yesno:"true,false" }};
+    $(document).on('click', '.add-to-cart', function () {
+      if (!isAuthenticated) {
+        $('#loginModal').modal('show');
+        return;
+      }
+      const id = $(this).data('id');
+      const name = $(this).data('name');
+      const price = parseFloat($(this).data('price'));
+
+      if (cart[id]) {
+        cart[id].quantity += 1;
+      } else {
+        cart[id] = {
+          name: name,
+          price: price,
+          quantity: 1
+        };
+      }
+
+      $.ajax({
+        url: '/add-to-cart/',
+        method: 'POST',
+        headers: { "X-CSRFToken": $('meta[name="csrf-token"]').attr('content') },
+        contentType: 'application/json',
+        data: JSON.stringify({
+          id: id,
+          quantity: cart[id].quantity
+        }),
+        success: function(response) {
+          toastr.success("Added to cart and saved!");
+        },
+        error: handleAjaxError
+      });
+
+      updateCartUI();
+    });
+
+    // Remove Item
+    $(document).on('click', '.remove-item', function () {
+      const id = $(this).closest('tr').data('id');
+      delete cart[id];
+      updateCartUI();
+      toastr.error("Item(s) will be removed from cart.");
+    });
+
+    // Change Quantity
+    $(document).on('change', '.cart-qty', function () {
+      const $row = $(this).closest('tr');
+      const id = $row.data('id');
+      const newQty = parseInt($(this).val());
+
+      if (newQty > 0) {
+        cart[id].quantity = newQty;
+      } else {
+        delete cart[id];
+      }
+
+      updateCartUI();
+    });
+
+    // Checkout
+    $('#checkout-btn').click(function () {
+      if (Object.keys(cart).length === 0) {
+        alert('Your cart is empty!');
+      } else {
+        alert('Proceeding to checkout...');
+        console.log(cart);  // You can send this via AJAX to your Django backend
+      }
+    });
+
+
+
+
+
+    $.ajax({
+    url: '/get-consumer-data/',  // Replace with your URL
+    method: 'GET',
+    dataType: 'json',
+    success: function(data) {
+      let $container = $('#productContainer');
+      $container.empty();
+
+      data.forEach(function(item) {
+        // create card HTML
+        const cardHtml = `
+          <div class="col-md-3">
+            <div class="card">
+              <img class="card-img-top img-size" src="https://rajlamsal.github.io/MBUSTCSA/Cauli.jpg" alt="${item.name__name}">
+              <div class="card-body">
+                <h5 class="card-title product-title">${item.name__name}</h5>
+                <div class="product-meta">
+                  <span class="product-price">${item.price} NPR/kg</span>
+                  <span class="product-quantity">${item.quantity} kg available</span>
+                </div>
+                <span class="certification">${item.certification}</span>
+                <button class="add-to-cart"
+                        data-id="${item.id}"
+                        data-name="${item.name__name}"
+                        data-price="${item.price}">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        $container.append(cardHtml);
+      });
+    },
+    error: function() {
+      alert('Failed to load products.');
+    }
+  });
+
+     
+  });
+</script>
+{% endblock %}

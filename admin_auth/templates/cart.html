@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block content %}
+ <div class="container">
+  <!-- Cart Section -->
+  <div class="cart mt-5">
+    <h2>Your Cart</h2>
+    <table class="cart-items table" id="cart-items">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="5">Your cart is empty</td></tr>
+      </tbody>
+    </table>
+
+    <div class="cart-total">
+      Total: <span id="cart-total">0</span> NPR
+    </div>
+
+    <button class="btn btn-primary checkout-btn" id="checkout-btn">Proceed to Checkout</button>
+  </div>
+
+  
+  <!-- Confirm Checkout Modal -->
+  <div class="modal fade" id="confirmCheckoutModal" tabindex="-1" role="dialog" aria-labelledby="confirmCheckoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content text-center">
+        <div class="modal-header">
+          <h5 class="modal-title w-100" id="confirmCheckoutModalLabel">Proceeding to Checkout...</h5>
+        </div>
+        <div class="modal-body">
+          <p>Do you want to continue to payment?</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button id="confirmYes" type="button" class="btn btn-success">Yes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment QR Section (hidden by default) -->
+  <div id="payment-section" class="text-center mt-4" style="display: none;">
+    <h4>Scan to Pay</h4>
+    {% if bank_qr_url %}
+      <img src="{{ bank_qr_url }}" alt="Bank QR Code" style="max-width: 200px; height: auto;" />
+    {% else %}
+      <p>No Bank QR uploaded.</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+ <script>
+    let cart = {};
+    function updateCartUI() {
+    let $tbody = $('#cart-items tbody');
+    $tbody.empty();
+
+    let total = 0;
+    if (Object.keys(cart).length === 0) {
+      $tbody.append('<tr><td colspan="5">Your cart is empty</td></tr>');
+    } else {
+      $.each(cart, function (id, item) {
+        let itemTotal = item.price * item.quantity;
+        total += itemTotal;
+        $tbody.append(`
+          <tr data-id="${id}">
+            <td>${item.name}</td>
+            <td>${item.price} NPR</td>
+            <td>
+              <input type="number" min="1" class="cart-qty" value="${item.quantity}" style="width: 60px;">
+            </td>
+            <td>${itemTotal} NPR</td>
+            <td><button class="remove-item btn btn-sm btn-danger">Remove</button></td>
+          </tr>
+        `);
+      });
+    }
+
+    $('#cart-total').text(total);
+  }
+
+    $(document).ready(function () {
+      
+       // Load saved cart items from DB
+        $.ajax({
+            url: '/get-cart-items/',
+            method: 'GET',
+            success: function(data) {
+            data.forEach(item => {
+                cart[item.id] = {
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity
+                };
+            });
+
+            updateCartUI();
+            },
+            error: handleAjaxError
+        });
+
+        // Remove Item
+        $(document).on('click', '.remove-item', function () {
+          const id = $(this).closest('tr').data('id');
+
+          $.ajax({
+              url: '/cart/remove/',
+              type: 'POST',
+              headers: {
+                  'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')  // function to get CSRF token
+              },
+              contentType: 'application/json',
+              data: JSON.stringify({ id: id }),
+              success: function (response) {
+                  if (response.status === 'success') {
+                      delete cart[id];
+                      updateCartUI();
+                      toastr.error("Item removed from cart.");
+                  } else {
+                      toastr.error("Error removing item: " + response.message);
+                  }
+              },
+              error: handleAjaxError
+          });
+      });
+
+      
+      // Change Quantity
+      $(document).on('change', '.cart-qty', function () {
+        const $row = $(this).closest('tr');
+        const id = $row.data('id');
+        const newQty = parseInt($(this).val());
+        if (newQty < 0){
+          toastr.error("Sorry! Please enter a valid quantity!");
+          $(this).val("1");
+          return;
+        }
+
+        if (newQty > 0) {
+          cart[id].quantity = newQty;
+
+          // Send update to backend
+          $.ajax({
+            url: '/update-cart-item/',
+            type: 'POST',
+            headers: {
+              'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')
+            },
+            contentType: 'application/json',
+            data: JSON.stringify({
+              id: id,
+              quantity: newQty
+            }),
+            success: function (response) {
+              if (response.status === 'success') {
+                updateCartUI();
+                toastr.success("Quantity updated!");
+              } else {
+                toastr.error("Failed to update quantity: " + response.message);
+              }
+            },
+            error: function () {
+              toastr.error("Server error while updating quantity.");
+            }
+          });
+
+        } else {
+          // Optionally remove the item if quantity is zero
+          delete cart[id];
+          updateCartUI();
+        }
+      });
+
+      // Checkout
+      $('#checkout-btn').click(function () {
+        if (Object.keys(cart).length === 0) {
+          toastr.error('Your cart is empty!');
+        } else {
+          $('#confirmCheckoutModal').modal('show');
+          console.log(cart);  // You can send this via AJAX to your Django backend
+        }
+      });
+    });
+
+    $('#confirmYes').click(function () {
+      $('#confirmCheckoutModal').modal('hide');
+      $('#payment-section').slideDown();  // Show the QR code section
+    });
+
+ </script>
+{% endblock %}

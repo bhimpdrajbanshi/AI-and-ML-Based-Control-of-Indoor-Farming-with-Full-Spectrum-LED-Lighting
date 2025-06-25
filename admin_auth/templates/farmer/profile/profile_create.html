@@ -1,0 +1,193 @@
+{% extends "farmer/base.html" %}
+
+{% block content_dashboard %}
+<div class="container mt-5">
+  <div class="card card-primary card-outline">
+    <div class="card-header p-2">
+      <ul class="nav nav-pills" id="profileTabs">
+        <li class="nav-item"><a class="nav-link active" href="#basic" data-toggle="tab">Basic Info</a></li>
+        <li class="nav-item"><a class="nav-link" href="#address" data-toggle="tab">Address</a></li>
+        <li class="nav-item"><a class="nav-link" href="#documents" data-toggle="tab">Documents</a></li>
+      </ul>
+    </div>
+
+    <div class="card-body">
+      <form id="profileCreateForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="tab-content">
+
+          <!-- Basic Info Tab -->
+          <div class="tab-pane active" id="basic">
+            <div class="form-group">
+              <label for="fullName" class="required">Full Name</label>
+              <input type="text" class="form-control" name="fullName" id="fullName" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" class="form-control" name="email" id="email" required>
+            </div>
+            <div class="form-group">
+              <label for="phone" class="required">Phone Number</label>
+              <input type="text" class="form-control" name="phone" id="phone" required>
+            </div>
+            <div class="text-right">
+              <button type="button" class="btn btn-secondary" id="nextToAddress">Next</button>
+            </div>
+          </div>
+
+          <!-- Address Tab -->
+          <div class="tab-pane" id="address">
+            <div class="form-group">
+              <label for="street">Street</label>
+              <input type="text" class="form-control" name="street" id="street" required>
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input type="text" class="form-control" name="city" id="city" required>
+            </div>
+            <div class="form-group">
+              <label for="state">State</label>
+              <input type="text" class="form-control" name="state" id="state" required>
+            </div>
+            <div class="form-group">
+              <label for="zip">Zip Code</label>
+              <input type="text" class="form-control" name="zip" id="zip" required>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" id="backToBasic">Back</button>
+              <button type="button" class="btn btn-secondary" id="nextToDocuments">Next</button>
+            </div>
+          </div>
+
+          <!-- Documents Tab -->
+          <div class="tab-pane" id="documents">
+            <h5>Document Upload</h5>
+            <div class="form-group">
+              <label for="bank_qr" class="required">Bank QR</label>
+              <input type="file" class="form-control-file" name="bank_qr" id="bank_qr">
+            </div>
+            <div class="form-group">
+              <label for="citizenship" class="required">Citizenship Document</label>
+              <input type="file" class="form-control-file" name="citizenship" id="citizenship">
+            </div>
+            <div class="form-group">
+              <label for="photo" class="required">Your Photo</label>
+              <input type="file" class="form-control-file" name="photo" id="photo">
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" id="backToAddress">Back</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+ <script>
+  $(document).ready(function () {
+    validatePhoneNumber('phone', 10);
+    toastr.options = {
+      closeButton: true,
+      positionClass: "toast-top-right"
+    };
+    $('#nextToAddress').click(function () {
+      $('#profileTabs a[href="#address"]').tab('show');
+    });
+
+    $('#backToBasic').click(function () {
+      $('#profileTabs a[href="#basic"]').tab('show');
+    });
+
+    $('#nextToDocuments').click(function () {
+      $('#profileTabs a[href="#documents"]').tab('show');
+    });
+
+    $('#backToAddress').click(function () {
+      $('#profileTabs a[href="#address"]').tab('show');
+    });
+
+    $('#profileTabs a').on('shown.bs.tab', function (e) {
+      localStorage.setItem('activeTab', $(e.target).attr('href'));
+    });
+
+    const activeTab = localStorage.getItem('activeTab');
+    if (activeTab && $('#profileTabs a[href="' + activeTab + '"]').length) {
+      $('#profileTabs a[href="' + activeTab + '"]').tab('show');
+    }
+
+    $('#profileCreateForm').on('submit', function () {
+      localStorage.removeItem('activeTab');
+    });
+
+    $('#profileCreateForm').on('submit', function (e) {
+      e.preventDefault();
+      
+      if (!validateRequiredFields('#profileCreateForm')) {
+        return; // stop if a required field is empty
+      }
+
+     const formData = new FormData(this);
+     debugger
+      $.ajax({
+        url: "{% url 'profile-create' %}",
+        method: "POST",
+        data: formData,
+        processData: false, // Required for FormData
+        contentType: false, // Required for FormData
+        headers: {
+          'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (response) {
+          toastr.success("Profile saved successfully!");
+          setTimeout(function () {
+            window.location.href = "{% url 'login' %}";
+          }, 2000);
+        },
+        error: handleAjaxError
+      });
+    });
+
+
+      $.ajax({
+        url: '/api/profile/get/',
+        method: 'GET',
+        success: function(response) {
+          if(response.status === 'success') {
+            const data = response.data;
+            // Fill inputs by ID
+            $('#fullName').val(data.fullName);
+            $('#email').val(data.email);
+            $('#phone').val(data.phone);
+            $('#street').val(data.street);
+            $('#city').val(data.city);
+            $('#state').val(data.state);
+            $('#zip').val(data.zip);
+            // Optional: Preview previously uploaded files (if desired)
+            if (data.bankQrUrl) {
+              $('#bank_qr').after(`<p><a href="${data.bankQrUrl}" target="_blank">View Bank QR</a></p>`);
+            }
+            if (data.citizenshipUrl) {
+              $('#citizenship').after(`<p><a href="${data.citizenshipUrl}" target="_blank">View Citizenship</a></p>`);
+            }
+            if (data.photoUrl) {
+              $('#photo').after(`<p><img src="${data.photoUrl}" alt="Your Photo" style="max-width: 150px; border: 1px solid #ccc;"/></p>`);
+            }
+
+          } else {
+            toastr.error(response.message)
+          }
+        },
+        error: handleAjaxError
+      });
+  });
+</script>
+{% endblock %}
