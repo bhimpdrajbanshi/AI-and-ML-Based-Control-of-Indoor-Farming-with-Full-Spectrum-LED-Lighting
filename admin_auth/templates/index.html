@@ -3,35 +3,35 @@
 {% block content %}
   {% comment %} banner {% endcomment %}
     <div class="hero">
-        <h1>Fresh Organic Vegetables Direct from Chitlang Farmers</h1>
-        <p>No middlemen. Fair prices. Lab-tested quality.</p>
-        <div class="cta-buttons">
-          <a href="{% url 'farmer-dashboard'%}">
-            <button type="button" class="btn btn-green">I'm a Farmer</button>
-          </a>
-          <button type="button" class="btn btn-green">I'm a Consumer</button>
-        </div>
+        <h3>AI and ML-Based Control of Indoor Farming with Full-Spectrum LED Lighting</h3>
+        <p>Harnessing Artificial Intelligence and Machine Learning for Precision Control of Full-Spectrum LED Lighting and Crop Optimization in Controlled Environments</p>
     </div>
 
     {% comment %} Content {% endcomment %}
     <div class="container mt-5">
-        <h2>About Our Initiative</h2>
-        <p>1. Background <br><br>
-          Community Supported Agriculture (CSA) is a farming system driven by the community, for the community, focusing on production and consumption. In CSA, a committed group of individuals supports community farming activities by producing and facilitating the consumption of high-quality food products. Under this system, a group of producers directly sells and distributes quality food products to consumers. In some models, consumers make advance payments for expected production costs, making it easier for producers to purchase necessary inputs. Additionally, both consumers and producers share the risks of production, fostering a stronger mutual relationship.
+      <div class="row">
+        <div class="col-md-6">
+          <h2 style="text-align:center;">🌿 AI-Controlled Indoor Farming – Sensor Dashboard</h2>
+          <canvas id="sensorChart"></canvas>
+        </div>
+        <div class="col-md-6">
+          <h2 style="text-align:center;">🌾 Sensor Comparison: Indoor vs Outdoor Farming</h2>
+          <canvas id="compareChart"></canvas>
 
-          CSA requires one or more groups of producers and consumers. CSA producers agree to supply products (vegetables, fruits, meat, milk, etc.) to consumers who purchase shares. Besides providing marketing convenience, CSA also serves as an important community-building component.
-        <br><br>
-
-
+        </div>
+      </div>
+        
+      <h2 class="mt-5" style="text-align:center;">Our Experiment</h2>
+      
         <div class="col-md-12 row ">
           <div class="col-md-4">
             <div class="card mt-4 ">
               <div class="card-body icon text-center">
                 <i class="fa-solid fa-wave-square my-3"></i>
                 <div class="underline">
-                  <h5 class="card-title">Fresh & Local Produce</h5>
+                  <h5 class="card-title">Indoor ambient light only</h5>
                 </div>
-                <p class="card-text px-5 py-3">Enjoy farm-fresh fruits and veggies delivered straight from nearby farms.</p>
+                <p class="card-text px-5 py-3">Indoor control to see growth without artificial light</p>
               </div>
             </div>
           </div>
@@ -40,9 +40,9 @@
               <div class="card-body icon text-center">
                 <i class="fa-brands fa-superpowers my-3"></i>
                 <div class="underline">
-                  <h5 class="card-title">Support Local Farmers</h5>
+                  <h5 class="card-title">Full-spectrum LED</h5>
                 </div>
-                <p class="card-text px-5 py-3">Your membership helps small farmers thrive while you eat better.</p>
+                <p class="card-text px-5 py-3">Test effect of full-spectrum light with static schedule.</p>
               </div>
             </div>
           </div>
@@ -51,9 +51,9 @@
               <div class="card-body icon text-center">
                 <i class="fa-solid fa-people-roof my-3"></i>
                 <div class="underline">
-                  <h5 class="card-title">Grow With Your Community</h5>
+                  <h5 class="card-title">Full-spectrum LED</h5>
                 </div>
-                <p class="card-text px-5 py-3">Build a healthier future by connecting with local farmers and food.</p>
+                <p class="card-text px-5 py-3">See combined effect of light and nutrient optimization.</p>
               </div>
             </div>
           </div>
@@ -62,9 +62,9 @@
               <div class="card-body icon text-center">
                 <i class="fa-solid fa-bowl-food my-3"></i>
                 <div class="underline">
-                  <h5 class="card-title">Join the Fresh Food Movement</h5>
+                  <h5 class="card-title">Natural sunlight</h5>
                 </div>
-                <p class="card-text px-5 py-3">Be part of a community that values health, freshness, and sustainability.</p>
+                <p class="card-text px-5 py-3">Baseline control to represent nature.</p>
               </div>
             </div>
           </div>
@@ -73,13 +73,13 @@
               <div class="card-body icon text-center">
                 <i class="fa-solid fa-map-location-dot my-3"></i>
                 <div class="underline">
-                  <h5 class="card-title">Your Share in Local Harvest</h5>
+                  <h5 class="card-title">No light (dark)</h5>
                 </div>
-                <p class="card-text px-5 py-3">Join a CSA and get a weekly box of fresh, local farm goods, local veg.</p>
+                <p class="card-text px-5 py-3">Negative control to measure baseline without light.</p>
               </div>
             </div>
           </div>
-           <div class="col-md-4">
+           {% comment %} <div class="col-md-4">
             <div class="card mt-4 ">
               <div class="card-body icon text-center">
                 <i class="fa-solid fa-bowl-food my-3"></i>
@@ -88,51 +88,198 @@
                 </div>
                 <p class="card-text px-5 py-3">Nourish your body and support your local food system.</p>
               </div>
-            </div>
+            </div> {% endcomment %}
           </div>
         </div>
-        
-          i. Rationale of Organic CSA<br><br>
-          There are two major challenges in organic farming promotion—production-related issues and market-related issues. CSA opens pathways to address production challenges while eliminating middlemen, ensuring that profits directly reach producers and consumers, thereby solving market-related issues. Since CSA has the potential to resolve both challenges, this model is being proposed for promoting organic farming in Chitlang.
-          <br><br>
-          ii. Benefits of CSA<br><br>
-          Benefits for Producers:
-
-          Access to pre-production financial resources.
-
-          Guaranteed market for produce.
-
-          Higher potential profits due to the absence of middlemen.
-
-          Reduced investment costs due to minimal use of chemical fertilizers and pesticides.
-
-          Consumers may adjust to slight variations in supply quantities.
-
-          Risk-sharing provisions with consumers.<br><br>
-
-          Benefits for Consumers:<br><br>
-
-          Access to fresh and healthy organic vegetables.
-
-          Awareness of local production sources and methods, ensuring safe consumption.
-
-          Contribution to sustainable environmental improvement.
-
-          Greater partnership and ownership in production risks and benefits.
-
-          Fixed-price guarantee for the entire season.
-
-          Affordable access to premium organic produce.<br><br>
-
-          Benefits for Chitlang:<br><br>
-
-          Promotion of organic farming and eco-tourism.
-
-          Improvement in sustainable environmental practices.
-
-          Economic and livelihood enhancement.</p>
     </div>
 {% endblock %}
 
 {% block scripts %}
+
+<script>
+  // 1️⃣ Sensor Chart (Real-Time Monitoring)
+
+  const ctx1 = document.getElementById('sensorChart').getContext('2d');
+
+  const gradientLight = ctx1.createLinearGradient(0, 0, 0, 400);
+  gradientLight.addColorStop(0, 'rgba(255, 206, 86, 0.5)');
+  gradientLight.addColorStop(1, 'rgba(255, 206, 86, 0.1)');
+
+  const gradientTemp = ctx1.createLinearGradient(0, 0, 0, 400);
+  gradientTemp.addColorStop(0, 'rgba(255, 99, 132, 0.5)');
+  gradientTemp.addColorStop(1, 'rgba(255, 99, 132, 0.1)');
+
+  const gradientHumidity = ctx1.createLinearGradient(0, 0, 0, 400);
+  gradientHumidity.addColorStop(0, 'rgba(54, 162, 235, 0.5)');
+  gradientHumidity.addColorStop(1, 'rgba(54, 162, 235, 0.1)');
+
+  const sensorChart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: ['10:00', '10:05', '10:10', '10:15', '10:20', '10:25'],
+      datasets: [
+        {
+          label: 'Light Intensity (lux)',
+          data: [300, 450, 500, 470, 490, 520],
+          backgroundColor: gradientLight,
+          borderColor: 'rgba(255, 206, 86, 1)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4
+        },
+        {
+          label: 'Temperature (°C)',
+          data: [22, 22.5, 23, 23.2, 23.4, 23.6],
+          backgroundColor: gradientTemp,
+          borderColor: 'rgba(255, 99, 132, 1)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4
+        },
+        {
+          label: 'Humidity (%)',
+          data: [55, 57, 58, 59, 58.5, 60],
+          backgroundColor: gradientHumidity,
+          borderColor: 'rgba(54, 162, 235, 1)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Sensor Readings – Real-Time Environmental Monitoring',
+          font: {
+            size: 18
+          }
+        },
+        tooltip: {
+          enabled: true,
+          mode: 'nearest',
+          callbacks: {
+            label: function(context) {
+              return `${context.dataset.label}: ${context.formattedValue}`;
+            }
+          }
+        },
+        legend: {
+          position: 'bottom'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          title: {
+            display: true,
+            text: 'Sensor Values'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Time'
+          }
+        }
+      }
+    }
+  });
+
+  // 2️⃣ Comparison Chart (Indoor vs Outdoor)
+
+  const ctx2 = document.getElementById('compareChart').getContext('2d');
+
+  const compareChart = new Chart(ctx2, {
+    type: 'line',
+    data: {
+      labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00'],
+      datasets: [
+        {
+          label: 'Indoor Light (lux)',
+          data: [400, 420, 410, 430, 425, 420],
+          borderColor: '#00ff88',
+          backgroundColor: 'rgba(0,255,136,0.1)',
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Outdoor Light (lux)',
+          data: [150, 800, 1100, 950, 700, 200],
+          borderColor: '#ffcc00',
+          backgroundColor: 'rgba(255,204,0,0.1)',
+          tension: 0.4,
+          fill: true
+        },
+        {
+          label: 'Indoor Temp (°C)',
+          data: [22.1, 22.3, 22.5, 22.6, 22.4, 22.2],
+          borderColor: '#66b3ff',
+          backgroundColor: 'rgba(102,179,255,0.1)',
+          tension: 0.3,
+          borderDash: [5, 5]
+        },
+        {
+          label: 'Outdoor Temp (°C)',
+          data: [18.0, 23.0, 29.5, 31.0, 27.0, 19.5],
+          borderColor: '#ff4444',
+          backgroundColor: 'rgba(255,68,68,0.1)',
+          tension: 0.3,
+          borderDash: [5, 5]
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Environmental Sensor Trends — Indoor vs Outdoor Farming',
+          font: {
+            size: 18
+          }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false
+        },
+        legend: {
+          labels: {
+            color: '#eee'
+          }
+        }
+      },
+      interaction: {
+        mode: 'nearest',
+        axis: 'x',
+        intersect: false
+      },
+      scales: {
+        x: {
+          ticks: { color: '#aaa' },
+          title: {
+            display: true,
+            text: 'Time',
+            color: '#ccc'
+          }
+        },
+        y: {
+          ticks: { color: '#aaa' },
+          title: {
+            display: true,
+            text: 'Sensor Values',
+            color: '#ccc'
+          }
+        }
+      }
+    }
+  });
+</script>
+
 {% endblock %}
