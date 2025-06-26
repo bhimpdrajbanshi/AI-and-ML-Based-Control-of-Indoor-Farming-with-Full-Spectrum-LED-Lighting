@@ -48,5 +48,10 @@ urlpatterns = [
     path('get-cart-items/', views.get_cart_items, name='get_cart_items'),
     path('update-cart-item/', views.update_cart_item, name='update_cart_item'),
     path('cart/remove/', views.remove_cart_item, name='remove_cart_item'),
+    
+    
+    
+    # IOT Project 
+    path('api/temp/', receive_temperature, name='receive_temperature'),
 
 ]

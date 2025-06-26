@@ -84,3 +84,13 @@ class CartItem(models.Model):
 
     class Meta:
         db_table = 'cart'
+        
+        
+        
+# IOT
+class TemperatureReading(models.Model):
+    temperature = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.temperature}°C at {self.timestamp}"
