@@ -53,5 +53,6 @@ urlpatterns = [
     
     # IOT Project 
     path('api/temp/', receive_temperature, name='receive_temperature'),
+    path('api/temperature-data/', temperature_data, name='temperature_data'),
 
 ]

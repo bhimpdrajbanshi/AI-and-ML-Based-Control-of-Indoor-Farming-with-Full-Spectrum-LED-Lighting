@@ -36,3 +36,15 @@ def receive_temperature(request):
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
     return JsonResponse({'status': 'error', 'message': 'Only POST allowed'}, status=405)
+
+
+
+def temperature_data(request):
+    readings = TemperatureReading.objects.order_by('-timestamp')[:50]  # Last 50 readings
+    data = {
+        'labels': [reading.timestamp.strftime('%Y-%m-%d %H:%M:%S') for reading in readings],
+        'temperature': [reading.temperature for reading in readings],
+        'humidity': [reading.humidity for reading in readings],
+        'light': [reading.light for reading in readings],
+    }
+    return JsonResponse(data)

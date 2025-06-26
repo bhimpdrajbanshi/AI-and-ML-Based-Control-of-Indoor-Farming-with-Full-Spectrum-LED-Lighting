@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Analog Temperature Gauge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- jQuery (required by SimpleGauge) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- SimpleGauge JS & CSS -->
+  <script src="https://cdn.jsdelivr.net/gh/peterthoeny/jquery.simplegauge@master/jquery.simplegauge.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/peterthoeny/jquery.simplegauge@master/jquery.simplegauge.css">
+
+  <!-- Optional styling -->
+  <style>
+   
+    .gauge-container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      width: 350px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="gauge-container">
+  <h2>Temperature</h2>
+  <div id="tempGauge" style="width: 16em; height: 16em; margin: auto;"></div>
+</div>
+
+<script>
+  $(function() {
+    $('#tempGauge').simpleGauge({
+      type: 'analog digital',
+      min: -20,
+      max: 100,
+      value: 38,
+      analog: {
+        numTicks: 12,
+        minAngle: -150,
+        maxAngle: 150,
+        lineWidth: 8,
+        arrowWidth: 6,
+        arrowColor: '#333'
+      },
+      ticks: {
+        count: 12,
+        scale1: 80,
+        scale2: 86,
+        style: 'width:2px; color:#666;'
+      },
+      subTicks: {
+        count: 4,
+        scale1: 76,
+        scale2: 80,
+        style: 'width:1px; color:#aaa;'
+      },
+      labels: {
+        text: '{value.0}',
+        count: 6,
+        scale: 70,
+        style: 'font-size:14px; fill:#333;'
+      },
+      bars: {
+        scale1: 97,
+        scale2: 95,
+        colors: [
+          [ -20, '#264653' ],
+          [ 20, '#2a9d8f' ],
+          [ 40, '#e9c46a' ],
+          [ 60, '#f4a261' ],
+          [ 80, '#e76f51' ]
+        ]
+      },
+      digital: {
+        text: '{value.1}°C',
+        style: 'color: #000; font-size: 24px;'
+      }
+    });
+
+    // Simulate live update
+    setTimeout(() => {
+      $('#tempGauge').simpleGauge('setValue', 7);
+    }, 3000);
+  });
+</script>
+
+</body>
+</html>

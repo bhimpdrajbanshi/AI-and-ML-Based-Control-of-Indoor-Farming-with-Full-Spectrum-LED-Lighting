@@ -1,194 +1,158 @@
 {% extends "admin/base.html" %}
 {% block content_dashboard %}
-    <!-- Small boxes (Stat box) -->
-    <div class="row">
-        <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-info">
-            <div class="inner">
-            <h3>150</h3>
-
-            <p>Active Farmer</p>
+  
+  <div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h2>Temperature</h2>
+                <div id="tempGauge" style="width: 16em; height: 16em; margin: auto;"></div>
             </div>
-            <div class="icon">
-            <i class="ion ion-bag"></i>
-            </div>
-            <a href="/users/list" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-success">
-            <div class="inner">
-            <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-            <p>New Farmer Request</p>
-            </div>
-            <div class="icon">
-            <i class="ion ion-stats-bars"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-warning">
-            <div class="inner">
-            <h3>44</h3>
-
-            <p>User Registrations</p>
-            </div>
-            <div class="icon">
-            <i class="ion ion-person-add"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-danger">
-            <div class="inner">
-            <h3>65</h3>
-
-            <p>Unique Visitors</p>
-            </div>
-            <div class="icon">
-            <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-        </div>
-        <!-- ./col -->
-    </div> 
-    <!-- /.row -->
-
-
-    <table class="table table-bordered" id="myCustomTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Quantity (kg)</th>
-                <th>Price (NPR)</th>
-                <th>Certification</th>
-                <th>Status</th>
-                <th>Remarks</th>
-                <th>Created By</th>  <!-- New column -->
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in produce_list %}
-            <tr>
-                <td>{{ item.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.certification }}</td>
-                <td>
-                    {% if item.get_status_display == 'Rejected' %}
-                        <span class="badge badge-danger">
-                            {{ item.get_status_display }}
-                        </span>
-                    {% elif item.get_status_display == 'Approved' %}
-                    <span class="badge badge-success">
-                            {{ item.get_status_display }}
-                        </span>
-                    {% else %}
-                        <span class="badge badge-warning">
-                            {{ item.get_status_display }}
-                        </span>
-                    {% endif %}
-                </td>
-                <td>{{ item.remarks }}</td>
-                <td>{{ item.created_by.username }}</td> <!-- New data cell -->
-                <td width="22%">
-                    <a href="{% url 'edit_produce' item.id %}" class="btn btn-sm btn-warning">Edit</a>
-                    
-                    <!-- Approve Button -->
-                    <button type="button"
-                            class="btn btn-sm btn-success action-btn"
-                            data-toggle="modal"
-                            data-target="#statusConfirmModal"
-                            data-id="{{ item.id }}"
-                            data-status="approved">
-                        Approve
-                    </button>
-
-                    <!-- Reject Button -->
-                    <button type="button"
-                            class="btn btn-sm btn-danger action-btn"
-                            data-toggle="modal"
-                            data-target="#statusConfirmModal"
-                            data-id="{{ item.id }}"
-                            data-status="rejected">
-                        Reject
-                    </button>
-                </td>
-
-            </tr>
-            {% empty %}
-            <tr><td colspan="8" class="text-center">No produce listed.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-
-    <!-- Confirm Modal for Approve/Reject -->
-    <div class="modal fade" id="statusConfirmModal" tabindex="-1" role="dialog" aria-labelledby="statusConfirmLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <form method="post" id="statusForm">
-            {% csrf_token %}
-            <input type="hidden" name="status" id="statusInput">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="statusConfirmLabel">Confirm Action</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Are you sure you want to <span id="actionTypeText"></span> this produce?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Yes, Confirm</button>
-            </div>
-            </div>
-        </form>
     </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h2>Light Intensity</h2>
+                <div id="tempGauge" style="width: 16em; height: 16em; margin: auto;"></div>
+            </div>
+        </div>
     </div>
+     <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h2>Humility</h2>
+                <div id="tempGauge" style="width: 16em; height: 16em; margin: auto;"></div>
+            </div>
+        </div>
+    </div>
+  </div>
+ 
 
+ 
+
+
+
+
+    <canvas id="tempChart" height="100px" ></canvas>
 {% endblock %}
 
 {% block scripts %}
-    <script>
-        $('#myCustomTable').DataTable({
-            paging: true,
-            searching: true,
-            ordering: true,
-            info: true,
-            responsive: true,
-        });
-        document.addEventListener('DOMContentLoaded', function () {
-        const statusForm = document.getElementById('statusForm');
-        const statusInput = document.getElementById('statusInput');
-        const actionTypeText = document.getElementById('actionTypeText');
+   <script>
+    $(function() {
+    $('#tempGauge, #lightGauge').simpleGauge({
+      type: 'analog digital',
+      min: -20,
+      max: 100,
+      value: 38,
+      analog: {
+        numTicks: 12,
+        minAngle: -150,
+        maxAngle: 150,
+        lineWidth: 8,
+        arrowWidth: 6,
+        arrowColor: '#333'
+      },
+      ticks: {
+        count: 12,
+        scale1: 80,
+        scale2: 86,
+        style: 'width:2px; color:#666;'
+      },
+      subTicks: {
+        count: 4,
+        scale1: 76,
+        scale2: 80,
+        style: 'width:1px; color:#aaa;'
+      },
+      labels: {
+        text: '{value.0}',
+        count: 6,
+        scale: 70,
+        style: 'font-size:14px; fill:#333;'
+      },
+      bars: {
+        scale1: 97,
+        scale2: 95,
+        colors: [
+          [ -20, '#264653' ],
+          [ 20, '#2a9d8f' ],
+          [ 40, '#e9c46a' ],
+          [ 60, '#f4a261' ],
+          [ 80, '#e76f51' ]
+        ]
+      },
+      digital: {
+        text: '{value.1}°C',
+        style: 'color: #000; font-size: 24px;'
+      }
+    });
 
-        document.querySelectorAll('.action-btn').forEach(button => {
-            button.addEventListener('click', function () {
-                const itemId = this.getAttribute('data-id');
-                const status = this.getAttribute('data-status');
+    // Simulate live update
+    setTimeout(() => {
+      $('#tempGauge').simpleGauge('setValue', 7);
+    }, 3000);
+  });
 
-                // Update form action and hidden input
-                statusForm.action = `/produce/${itemId}/change-status/`;
-                statusInput.value = status;
 
-                // Update modal text
-                actionTypeText.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+
+    
+
+
+          $.ajax({
+            url: '/api/temperature-data/',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                const ctx = document.getElementById('tempChart').getContext('2d');
+                const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels.reverse(), // Oldest to newest
+                    datasets: [
+                    {
+                        label: 'Temperature (°C)',
+                        data: data.temperature.reverse(),
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        fill: false,
+                    },
+                    {
+                        label: 'Humidity (%)',
+                        data: data.humidity.reverse(),
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        fill: false,
+                    },
+                    {
+                        label: 'Light (lux)',
+                        data: data.light.reverse(),
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        fill: false,
+                    }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                    x: {
+                        title: {
+                        display: true,
+                        text: 'Timestamp'
+                        }
+                    },
+                    y: {
+                        title: {
+                        display: true,
+                        text: 'Values'
+                        }
+                    }
+                    }
+                }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching temperature data:', error);
+            }
             });
-            });
-        });
+
     </script>
 {% endblock %}
