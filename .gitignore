@@ -1,2 +1,2 @@
-env
+.env
 mbust_project/settings.py
