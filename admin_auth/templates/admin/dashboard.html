@@ -4,95 +4,102 @@
   <div class="row">
     <div class="col-md-4">
         <div class="card">
+            <div class="card-header bg-primary text-center">
+             <i class="fa-solid fa-temperature-three-quarters"></i>  Temperature
+            </div>
             <div class="card-body">
-                <h2>Temperature</h2>
                 <div id="tempGauge" style="width: 16em; height: 16em; margin: auto;"></div>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card">
+            <div class="card-header bg-info text-center">
+             <i class="fa-solid fa-gauge-simple-high"></i> Light Intensity
+            </div>
             <div class="card-body">
-                <h2>Light Intensity</h2>
                 <div id="tempGauge" style="width: 16em; height: 16em; margin: auto;"></div>
             </div>
         </div>
     </div>
      <div class="col-md-4">
         <div class="card">
+            <div class="card-header bg-success text-center">
+             <i class="fa-solid fa-cloud-showers-water"></i> Humility
+            </div>
             <div class="card-body">
-                <h2>Humility</h2>
                 <div id="tempGauge" style="width: 16em; height: 16em; margin: auto;"></div>
             </div>
         </div>
     </div>
   </div>
  
-
- 
-
-
-
-
-    <canvas id="tempChart" height="100px" ></canvas>
+  <div class="card">
+    <div class="card-header bg-info text-center">
+      Temp Vs  Humility Vs  Intensity
+    </div>
+    <card class="body">
+      <canvas id="tempChart" height="100px" ></canvas>
+    </card>
+  </div>
 {% endblock %}
 
 {% block scripts %}
    <script>
     $(function() {
-    $('#tempGauge, #lightGauge').simpleGauge({
-      type: 'analog digital',
-      min: -20,
-      max: 100,
-      value: 38,
-      analog: {
-        numTicks: 12,
-        minAngle: -150,
-        maxAngle: 150,
-        lineWidth: 8,
-        arrowWidth: 6,
-        arrowColor: '#333'
-      },
-      ticks: {
-        count: 12,
-        scale1: 80,
-        scale2: 86,
-        style: 'width:2px; color:#666;'
-      },
-      subTicks: {
-        count: 4,
-        scale1: 76,
-        scale2: 80,
-        style: 'width:1px; color:#aaa;'
-      },
-      labels: {
-        text: '{value.0}',
-        count: 6,
-        scale: 70,
-        style: 'font-size:14px; fill:#333;'
-      },
-      bars: {
-        scale1: 97,
-        scale2: 95,
-        colors: [
-          [ -20, '#264653' ],
-          [ 20, '#2a9d8f' ],
-          [ 40, '#e9c46a' ],
-          [ 60, '#f4a261' ],
-          [ 80, '#e76f51' ]
-        ]
-      },
-      digital: {
-        text: '{value.1}°C',
-        style: 'color: #000; font-size: 24px;'
-      }
-    });
+      $('#tempGauge, #lightGauge').simpleGauge({
+        type: 'analog digital',
+        min: -20,
+        max: 100,
+        value: 38,
+        analog: {
+          numTicks: 12,
+          minAngle: -150,
+          maxAngle: 150,
+          lineWidth: 8,
+          arrowWidth: 6,
+          arrowColor: '#333'
+        },
+        ticks: {
+          count: 20,
+          scale1: 80,
+          scale2: 86,
+          style: 'width:2px; color:rgb(0 188 180 / 89%);'
+        },
+        subTicks: {
+          count: 8,
+          scale1: 76,
+          scale2: 80,
+          style: 'width:1px; color:#6fe501;'
+        },
+        labels: {
+          text: '{value.0}',
+          count: 6,
+          scale: 70,
+          style: 'font-size:14px; fill:#333;'
+        },
+        bars: {
+          scale1: 97,
+          scale2: 95,
+          colors: [
+            [ -20, '#264653' ],
+            [ 20, '#2a9d8f' ],
+            [ 40, '#e9c46a' ],
+            [ 60, '#f4a261' ],
+            [ 80, '#e76f51' ]
+          ]
+        },
+        digital: {
+          text: '{value.1}°C',
+          style: 'color: #000; font-size: 24px;'
+        }
+      });
 
-    // Simulate live update
-    setTimeout(() => {
-      $('#tempGauge').simpleGauge('setValue', 7);
-    }, 3000);
-  });
+      // Simulate live update
+      setTimeout(() => {
+        $('#tempGauge').simpleGauge('setValue', 7);
+      }, 3000);
+    });
 
 
 
