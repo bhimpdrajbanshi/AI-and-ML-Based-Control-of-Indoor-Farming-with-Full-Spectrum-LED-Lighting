@@ -102,7 +102,9 @@ def admin_dashboard(request):
     produce_list = Produce.objects.all()
     context = {
         'produce_list': produce_list,
-        'users': users
+        'users': users,
+        "latest_level": 20,
+        "latest_time": '12:00'
     }
     return render(request, 'admin/dashboard.html', context)
 

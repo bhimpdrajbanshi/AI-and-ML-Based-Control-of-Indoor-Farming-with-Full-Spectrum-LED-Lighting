@@ -1,5 +1,13 @@
 {% extends "admin/base.html" %}
 {% block content_dashboard %}
+  <style>
+    .water-tank .liquid svg {
+      height:30em;
+      top: calc(97.5% - {{latest_level}}%);
+      position:absolute;
+      animation: waves 5s infinite linear;
+    }
+  </style>
   
   <div class="row">
     <div class="col-md-4">
@@ -18,7 +26,7 @@
              <i class="fa-solid fa-gauge-simple-high"></i> Light Intensity
             </div>
             <div class="card-body">
-                <div id="tempGauge" style="width: 16em; height: 16em; margin: auto;"></div>
+                <div id="intensityGauge" style="width: 16em; height: 16em; margin: auto;"></div>
             </div>
         </div>
     </div>
@@ -28,18 +36,113 @@
              <i class="fa-solid fa-cloud-showers-water"></i> Humility
             </div>
             <div class="card-body">
-                <div id="tempGauge" style="width: 16em; height: 16em; margin: auto;"></div>
+                <div id="humidityGauge" style="width: 16em; height: 16em; margin: auto;"></div>
             </div>
+        </div>
+    </div>
+
+
+
+
+     <div class="col-12">
+        <div class="card" style="background:#605c5c0f;">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-6" style="padding-top: 3% !important;">
+                <!-- Static Data Summary -->
+                <div class="row">
+                  <div class="col-12 col-sm-6 col-md-12">
+                    <div class="info-box">
+                      <span class="info-box-icon bg-info elevation-1"><i class="fa-solid fa-droplet"></i></span>
+    
+                      <div class="info-box-content">
+                        <span class="info-box-text">Water Level</span>
+                        <span class="info-box-number water-level">
+                        </span>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-12">
+                    <div class="info-box">
+                      <span class="info-box-icon bg-danger elevation-1"><i class="fa-solid fa-clock"></i></span>
+    
+                      <div class="info-box-content">
+                        <span class="info-box-text">Time</span>
+                        <span class="info-box-number">
+                          {{ latest_time }}
+                          <small>pm</small>
+                        </span>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                  <div class="col-12 col-sm-6 col-md-12">
+                    <div class="info-box">
+                      <span class="info-box-icon bg-success elevation-1"><i class="fa-solid fa-rectangle-list"></i></span>
+    
+                      <div class="info-box-content">
+                        <span class="info-box-text">Status</span>
+                        <span class="info-box-number status">
+                        </span>
+                      </div>
+                      <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="water-tank">
+                <div class="liquid">
+                  <svg class="water" viewBox="0 0 200 100">
+                    <defs>
+                      <linearGradient id="waterGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0" style="stop-color:#29ABE2"/>
+                      <stop offset="0.1643" style="stop-color:#28A6E3"/>
+                      <stop offset="0.3574" style="stop-color:#2496E6"/>
+                      <stop offset="0.5431" style="stop-color:#1E7DEA"/>
+                      <stop offset="0.7168" style="stop-color:#1559F0"/>
+                      <stop offset="0.874" style="stop-color:#0B2CF7"/>
+                      <stop offset="1" style="stop-color:#0000FF"/>
+                      </linearGradient>
+                    </defs>
+                    <path fill="url(#waterGradient)" d="
+                      M 0,0 v 100 h 200 v -100 
+                      c -10,0 -15,5 -25,5 c -10,0 -15,-5 -25,-5
+                      c -10,0 -15,5 -25,5 c -10,0 -15,-5 -25,-5
+                      c -10,0 -15,5 -25,5 c -10,0 -15,-5 -25,-5
+                      c -10,0 -15,5 -25,5 c -10,0 -15,-5 -25,-5
+                    "/>
+                  </svg>
+                </div>
+              
+                <div class="indicator" data-value="75"></div> 
+                <div class="indicator" data-value="50"></div> 
+                <div class="indicator" data-value="25"></div> 
+              
+                <div class="label" style="bottom:{{latest_level}}%;">{{latest_level}}%</div> 
+              </div> 
+    
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-info text-center">
+            Water Level Monitoring [ 100 Liter Tank Capacity ]
+          </div>
+
         </div>
     </div>
   </div>
  
   <div class="card">
-    <div class="card-header bg-info text-center">
-      Temp Vs  Humility Vs  Intensity
-    </div>
     <card class="body">
       <canvas id="tempChart" height="100px" ></canvas>
+      <div class="card-footer bg-info text-center">
+       Temp Vs  Humility Vs  Intensity
+      </div>
     </card>
   </div>
 {% endblock %}
@@ -47,11 +150,11 @@
 {% block scripts %}
    <script>
     $(function() {
-      $('#tempGauge, #lightGauge').simpleGauge({
+      $('#tempGauge').simpleGauge({
         type: 'analog digital',
         min: -20,
         max: 100,
-        value: 38,
+        value: 0,
         analog: {
           numTicks: 12,
           minAngle: -150,
@@ -95,11 +198,106 @@
         }
       });
 
-      // Simulate live update
-      setTimeout(() => {
-        $('#tempGauge').simpleGauge('setValue', 7);
-      }, 3000);
+
+
+      $('#intensityGauge').simpleGauge({
+        type: 'analog digital',
+        min: 0,
+        max: 1024,
+        value: 0,
+        analog: {
+          numTicks: 12,
+          minAngle: -150,
+          maxAngle: 150,
+          lineWidth: 8,
+          arrowWidth: 6,
+          arrowColor: '#333'
+        },
+        ticks: {
+          count: 20,
+          scale1: 80,
+          scale2: 86,
+          style: 'width:2px; color:rgb(0 188 180 / 89%);'
+        },
+        subTicks: {
+          count: 8,
+          scale1: 76,
+          scale2: 80,
+          style: 'width:1px; color:#6fe501;'
+        },
+        labels: {
+          text: '{value.0}',
+          count: 6,
+          scale: 70,
+          style: 'font-size:14px; fill:#333;'
+        },
+        bars: {
+          scale1: 97,
+          scale2: 95,
+          colors: [
+            [ -20, '#264653' ],
+            [ 20, '#2a9d8f' ],
+            [ 40, '#e9c46a' ],
+            [ 60, '#f4a261' ],
+            [ 80, '#e76f51' ]
+          ]
+        },
+        digital: {
+          text: '{value.1}',
+          style: 'color: #000; font-size: 24px;'
+        }
+      });
     });
+
+
+
+    $('#humidityGauge').simpleGauge({
+        type: 'analog digital',
+        min: 0,
+        max: 100,
+        value: 0,
+        analog: {
+          numTicks: 12,
+          minAngle: -150,
+          maxAngle: 150,
+          lineWidth: 8,
+          arrowWidth: 6,
+          arrowColor: '#333'
+        },
+        ticks: {
+          count: 20,
+          scale1: 80,
+          scale2: 86,
+          style: 'width:2px; color:rgb(0 188 180 / 89%);'
+        },
+        subTicks: {
+          count: 8,
+          scale1: 76,
+          scale2: 80,
+          style: 'width:1px; color:#6fe501;'
+        },
+        labels: {
+          text: '{value.0}',
+          count: 6,
+          scale: 70,
+          style: 'font-size:14px; fill:#333;'
+        },
+        bars: {
+          scale1: 97,
+          scale2: 95,
+          colors: [
+            [ -20, '#264653' ],
+            [ 20, '#2a9d8f' ],
+            [ 40, '#e9c46a' ],
+            [ 60, '#f4a261' ],
+            [ 80, '#e76f51' ]
+          ]
+        },
+        digital: {
+          text: '{value.1}  RH %',
+          style: 'color: #000; font-size: 24px;'
+        }
+      });
 
 
 
@@ -111,9 +309,17 @@
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                const ctx = document.getElementById('tempChart').getContext('2d');
-                const chart = new Chart(ctx, {
-                type: 'line',
+              setTimeout(() => {
+                console.log('gggggggggggggggggggg', data.current_read?.temperature)
+                console.log('gggggggggggggggggggg', data.current_read?.light)
+                $('#tempGauge').simpleGauge('setValue', data.current_read?.temperature);
+                $('#intensityGauge').simpleGauge('setValue', data.current_read?.light);
+                $('#humidityGauge').simpleGauge('setValue', data.current_read?.humidity);
+              }, 3000);
+                
+              const ctx = document.getElementById('tempChart').getContext('2d');
+              const chart = new Chart(ctx, {
+              type: 'line',
                 data: {
                     labels: data.labels.reverse(), // Oldest to newest
                     datasets: [
@@ -161,5 +367,34 @@
             }
             });
 
+        
+          // 🔁 Update chart with new data every 2 seconds
+      function getWaterData() {
+        fetch('/getData/waterTank/')
+          .then(res => res.json())
+          .then(data => {
+            const newLabel = data.time;
+            const newValue = data.level;
+            const status = data.status
+
+            if ( status == 'Low' ||  status == 'High'){
+              $('.status').html(`<span class="badge badge-danger">${status}</span>`);
+            } else{
+              $('.status').html(`<span class="badge badge-success">${status}</span>`);
+            }
+
+
+            // Update label style and text
+            if ($('.label').length) {
+              const displayValue = Math.round(newValue) + 'liter';
+              $('.label').css('bottom', newValue + '%').text(displayValue);
+              $('.water-level').html(`${newValue}<small>liter</small>`);
+            }
+      
+          })
+          .catch(err => console.error('Chart update error:', err));
+      }
+
+      setInterval(getWaterData, 2000); // Poll every 2 seconds
     </script>
 {% endblock %}

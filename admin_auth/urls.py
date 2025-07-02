@@ -27,7 +27,6 @@ urlpatterns = [
     path('edit-produce/<int:id>/', edit_produce, name='edit_produce'),
     path('delete-produce/<int:id>/', delete_produce, name='delete_produce'),
     path('produce/<int:pk>/change-status/', change_produce_status, name='change_produce_status'),
-    # path('api/latest/', views.get_latest_data, name='get_latest_data')
     
     # farmer Prifile
     path('farmer/profile/create', profile_create, name='profile-create'),
@@ -50,9 +49,11 @@ urlpatterns = [
     path('cart/remove/', views.remove_cart_item, name='remove_cart_item'),
     
     
-    
     # IOT Project 
     path('api/temp/', receive_temperature, name='receive_temperature'),
     path('api/temperature-data/', temperature_data, name='temperature_data'),
+    
+    
+    path('getData/waterTank/', get_data_water_tank, name='get_data_water_tank')
 
 ]
